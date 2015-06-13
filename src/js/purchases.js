@@ -4,7 +4,7 @@ define(['react', 'jquery', 'myInput', 'common', 'datepicker', 'moment'], functio
 		loadPurchasesFromServer: function(params) {
 			var oldData = this.state.data;
 			$.ajax({
-				url: '/expenseTypes/list',
+				url: 'http://localhost:9000/expenseTypes/list',
 				dataType: 'json',
 				success: function(data) {
 					this.setState({expTypesList: data.expTypesList});

@@ -9,27 +9,26 @@ function(React, Router, ExpenseTypeWrapper, ExpenseDetailWrapper, PurchasesWrapp
     	},
     	componentDidMount: function() {
 				Router.addRoute('', function() {
-          this.setState({page: <ExpenseTypeWrapper url='/expenseTypes/list' />});
+          this.setState({page: <ExpenseTypeWrapper url='http://localhost:9000/expenseTypes/list' />});
         }.bind(this));
 				Router.addRoute('Types', function(id) {
-          this.setState({page: <ExpenseTypeWrapper url='/expenseTypes/list' />});
+          this.setState({page: <ExpenseTypeWrapper url='http://localhost:9000/expenseTypes/list' />});
         }.bind(this));
 				Router.addRoute('Details', function(id) {
-          this.setState({page: <ExpenseDetailWrapper selectedDetail={id} url="/expenseDetails/list" />});
+          this.setState({page: <ExpenseDetailWrapper selectedDetail={id} url="http://localhost:9000/expenseDetails/list" />});
         }.bind(this));
 				Router.addRoute('Details/:id', function(id) {
-        	var url='/expenseDetails/list/';
+        	var url='http://localhost:9000/expenseDetails/list/';
           this.setState({page: <ExpenseDetailWrapper selectedDetail={id} url={url} />});
         }.bind(this));
 				Router.addRoute('Purchases', function(id) {
-					console.log("Heisann " + id);
-          this.setState({page: <PurchasesWrapper url='/purchases/list' params={id}/>});
+          this.setState({page: <PurchasesWrapper url='http://localhost:9000/purchases/list' params={id}/>});
         }.bind(this));
 				Router.addRoute('Overview', function(id) {
-          this.setState({page: <ExpenseTypeWrapper url='/expenseTypes/list' />});
+          this.setState({page: <ExpenseTypeWrapper url='http://localhost:9000/expenseTypes/list' />});
         }.bind(this));
 				Router.addRoute('Upload', function(id) {
-          this.setState({page: <ExpenseTypeWrapper url='/expenseTypes/list' />});
+          this.setState({page: <ExpenseTypeWrapper url='http://localhost:9000/expenseTypes/list' />});
         }.bind(this));
 				Router.start();
     	},

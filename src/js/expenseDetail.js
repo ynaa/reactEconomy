@@ -143,10 +143,10 @@ define(['react', 'jquery', 'myInput', 'common'], function(React, Router, MyInput
         loadDataFromServer: function(expTypeId) {
         	var url = this.props.url;
         	if(expTypeId != undefined && expTypeId != ''){
-        		url = '/expenseDetails/list' + '/' + expTypeId
+        		url = 'http://localhost:9000/expenseDetails/list' + '/' + expTypeId
         	}
           else{
-            url = '/expenseDetails/list'
+            url = 'http://localhost:9000/expenseDetails/list'
           }
           $.ajax({
               url: url,

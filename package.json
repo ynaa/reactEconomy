@@ -20,6 +20,8 @@
     "matchdep": "^0.3.0",
     "react": "^0.13.3",
     "react-datepicker": "^0.8.0",
-    "react-router": "^0.13.3"
+    "react-router": "^0.13.3",
+    "requirejs-react-jsx": "^0.14.2",
+    "requirejs-text": "^2.0.12"
   }
 }
