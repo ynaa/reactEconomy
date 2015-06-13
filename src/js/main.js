@@ -1,17 +1,16 @@
 require.config({
 	deps: ["main"],
   paths: {
-    "react": "../bower_components/react/react-with-addons",
-    "JSXTransformer": "../bower_components/react/JSXTransformer",
-    "jsx": "../bower_components/requirejs-react-jsx/jsx",
-    "text": "../bower_components/requirejs-text/text",
+    "react": "../node_modules/react/dist/react-with-addons",
+    "JSXTransformer": "../node_modules/react/JSXTransformer",
+    "jsx": "../node_modules/grunt-react/node_modules/react-tools/vendor/fbtransform/transforms/jsx",
+    "text": "../node_modules/requirejs-text/text",
     "jquery": "//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min",
 		"datepicker": "dist/react-datepicker",
-		"moment": "node_modules/moment/moment",
-		"react-onclickoutside": "node_modules/react-onclickoutside/index",
-		"reactRouter": "umd/ReactRouter"
+		"moment": "../node_modules/moment/moment",
+		"react-onclickoutside": "../node_modules/react-onclickoutside/index",
+		"reactRouter": "../node_modules/react-router/umd/ReactRouter"
   },
-
   shim : {
 		JSXTransformer: {
 			exports: "JSXTransformer"
@@ -24,26 +23,9 @@ require.config({
 
 
 require(['common'], function(){
-	require(['react', 'jsx!app', 'jsx!menu', 'reactRouter'], function(React, App, Menu, ReactRouter){
-
-
-		var Router = ReactRouter.Router;
-		var Route = ReactRouter.Route;
-
-		React.render((
-			<Router >
-				<Route path="/" component={Menu}>
-
-				</Route>
-			</Router>
-		), document.body);
-
-
+	require(['react', 'jsx!app'], function(React, App){
+		React.render(<App/>, document.body);
 	});
-
-//React.render(<App/>, document.body);
-
-
 });
 
 define(['jquery'], function($) {

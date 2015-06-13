@@ -6,6 +6,20 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    srcPath: 'src',
+    distPath: 'dist',
+    buildPath: 'public',
+
+    shell: {
+        'build-jsx': {
+            command: [
+                'jsx <%= srcPath %>/js/ <%= distPath %>/js'
+            ].join(' && '),
+            stdout: true,
+            failOnError: true
+        }
+    },
+
     mkdir: {
       all: {
         options: {
@@ -47,6 +61,11 @@ module.exports = function(grunt) {
       }
     },
     copy: {
+      // libs: {
+      //   files: [
+      //     {expand: true, src: ['node_modules/**'], dest: 'dist/', filter: 'isFile'}
+      //   ]
+      // },
       css: {
         files: [
           {expand: true, flatten: true, src: ['src/css/*'], dest: 'dist/css', filter: 'isFile'}
@@ -73,9 +92,11 @@ module.exports = function(grunt) {
     }
   });
 
+
+  grunt.registerTask('jsx', ['shell:build-jsx']);
   grunt.registerTask('default', ['watch']);
-  grunt.registerTask('dev', ['copy', 'express', 'watch']);
   grunt.registerTask('build', ['mkdir', 'react', 'copy']);
+  grunt.registerTask('dev', ['build', 'express', 'watch']);
 
 
 
