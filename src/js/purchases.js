@@ -1,10 +1,13 @@
 define(['react', 'jquery', 'myInput', 'common', 'datepicker', 'moment'], function(React, Router, MyInput, Common, DatePicker, Moment){
 
 	var PurchasesWrapper = React.createClass({
-		loadPurchasesFromServer: function(params) {
-			var oldData = this.state.data;
+		loadData: function(params){
+			this.loadExpenseTypesFromServer();
+			this.loadPurchasesFromServer(params);
+		},
+		loadExpenseTypesFromServer: function() {
 			$.ajax({
-				url: 'http://localhost:9000/expenseTypes/list',
+				url: this.state.baseUrl + 'expenseTypes/list',
 				dataType: 'json',
 				success: function(data) {
 					this.setState({expTypesList: data.expTypesList});
@@ -13,8 +16,15 @@ define(['react', 'jquery', 'myInput', 'common', 'datepicker', 'moment'], functio
 					console.error(this.props.url, status, err.toString());
 				}.bind(this)
 			});
+		},
+		loadPurchasesFromServer: function(params) {
+			var url = this.state.baseUrl + 'purchases/list';
+			if(params){
+				url = url + "?" + params;
+			}
+
 			$.ajax({
-				url: this.props.url,
+				url: url,
 				dataType: 'json',
 				success: function(data) {
 					this.setState({purchasesList: data.purchasesList, expDetList: data.expDetList});
@@ -33,7 +43,7 @@ define(['react', 'jquery', 'myInput', 'common', 'datepicker', 'moment'], functio
 	    var json = JSON.stringify(purchase);
 	    this.setState({data: this.state.data}, function() {
 	        $.ajax({
-	            url: "/purchases/edit/" + purchase._id,
+	            url: this.state.baseUrl + "/purchases/edit/" + purchase._id,
 	            contentType: "application/json; charset=utf-8",
 	            type: 'POST',
 	            data: json,
@@ -46,33 +56,10 @@ define(['react', 'jquery', 'myInput', 'common', 'datepicker', 'moment'], functio
 	    });
 	  },
 		filterPurchases: function(expType, expDet, start, end){
-
-			var url = "/purchases/list?";
-			if(expType) {
-				url += "&expType=" + expType;
-			}
-			if(expDet) {
-				url += "&expDet=" + expDet;
-			}
-			if(start) {
-				url += "&start=" + Common.createSearchDate(start.toDate());
-			}
-			if(end) {
-				url += "&stop=" + Common.createSearchDate(end.toDate());
-			}
-			$.ajax({
-	      url: url,
-	      dataType: 'json',
-	      success: function(data) {
-					this.setState({purchasesList: data.purchasesList, expDetList: data.expDetList});
-	      }.bind(this),
-	      error: function(xhr, status, err) {
-          console.error(this.props.url, status, err.toString());
-	      }.bind(this)
-	    });
+			var params = createParams(expType, expDet, start, end);
+			this.loadPurchasesFromServer(params);
 		},
 	  handlePurchaseDelete: function(purhcase_id){
-	    console.log("Sletter");
 	    var purchasesList = this.state.data.purchasesList;
 	    var expDetList = this.state.data.expDetList;
 	    var expTypesList = this.state.data.expTypesList;
@@ -80,7 +67,7 @@ define(['react', 'jquery', 'myInput', 'common', 'datepicker', 'moment'], functio
 	    var purhcase = allData.find(function(id, value){return id=purhcase_id});
 	    if(confirm("Er du sikker på du vil slette  " + purhcase.description + "?")){
 	        $.ajax({
-	            url: "/purchases/delete/" + purhcase_id,
+	            url: this.state.baseUrl + "/purchases/delete/" + purhcase_id,
 	            type: 'DELETE',
 	            data: {},
 	            success: function(data) {
@@ -99,11 +86,16 @@ define(['react', 'jquery', 'myInput', 'common', 'datepicker', 'moment'], functio
       return {
         'purchasesList' : {'items': []},
         'expDetList' : [],
-				'expTypesList': []
+				'expTypesList': [],
+				baseUrl: 'http://localhost:9000/'
       };
 	  },
 	  componentDidMount: function() {
-	      this.loadPurchasesFromServer();
+			var expDet = this.props.query.expDet;
+			var expType = this.props.query.expType;
+			var start = this.props.query.start;
+			var end = this.props.query.end;
+      this.loadData(createParams(expType, expDet, start, end));
 	  },
 	  render: function() {
       return (
@@ -278,6 +270,23 @@ var PurchasesList = React.createClass({
     );
   }
 });
+
+function createParams(expType, expDet, start, end){
+	var params = "";
+	if(expType) {
+		params += "&expType=" + expType;
+	}
+	if(expDet) {
+		params += "&expDet=" + expDet;
+	}
+	if(start) {
+		params += "&start=" + Common.createSearchDate(start.toDate());
+	}
+	if(end) {
+		params += "&stop=" + Common.createSearchDate(end.toDate());
+	}
+	return params;
+}
 
 
 return PurchasesWrapper;

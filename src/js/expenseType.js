@@ -88,7 +88,7 @@ define(['react', 'jquery', 'myInput', 'common'], function(React, Router, MyInput
     var ExpenseTypeWrapper = React.createClass({
     	loadExpenseTypesFromServer: function() {
         $.ajax({
-            url: this.props.url,
+            url: this.state.baseUrl + 'expenseTypes/list',
             dataType: 'json',
             success: function(data) {
                 this.setState({data: data.expTypesList});
@@ -107,7 +107,7 @@ define(['react', 'jquery', 'myInput', 'common'], function(React, Router, MyInput
                 // `we'll send the ajax request right after we optimistically set the new
                 // `state.
                 $.ajax({
-                    url: "/expenseTypes/add",
+                    url: this.state.baseUrl + "/expenseTypes/add",
                     contentType: "application/json; charset=utf-8",
                     type: 'POST',
                     data: json,
@@ -126,7 +126,7 @@ define(['react', 'jquery', 'myInput', 'common'], function(React, Router, MyInput
             var expType = allData.find(function(id, value){return id=theId});
             if(confirm("Er du sikker på du vil slette  " + expType.typeName + "?")){
                 $.ajax({
-                    url: "/expenseTypes/delete/" + theId,
+                    url: this.state.baseUrl + "/expenseTypes/delete/" + theId,
                     type: 'DELETE',
                     data: {},
                     success: function(data) {
@@ -148,7 +148,7 @@ define(['react', 'jquery', 'myInput', 'common'], function(React, Router, MyInput
               // `we'll send the ajax request right after we optimistically set the new
               // `state.
               $.ajax({
-                  url: "/expenseTypes/edit/" + editType._id,
+                  url: this.state.baseUrl + "/expenseTypes/edit/" + editType._id,
                   contentType: "application/json; charset=utf-8",
                   type: 'POST',
                   data: json,
@@ -162,7 +162,10 @@ define(['react', 'jquery', 'myInput', 'common'], function(React, Router, MyInput
           });
         },
         getInitialState: function() {
-            return {data: []};
+            return {
+              data: [],
+              baseUrl: 'http://localhost:9000/'
+            };
         },
         componentDidMount: function() {
             this.loadExpenseTypesFromServer();

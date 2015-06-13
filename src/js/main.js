@@ -9,7 +9,8 @@ require.config({
 		"datepicker": "../node_modules/react-datepicker/dist/react-datepicker",
 		"moment": "../node_modules/react-datepicker/node_modules/moment/moment",
 		"react-onclickoutside": "../node_modules/react-datepicker/node_modules/react-onclickoutside/index",
-		"reactRouter": "../node_modules/react-router/umd/ReactRouter"
+		"reactRouter": "../node_modules/react-router/umd/ReactRouter",
+		"react-router": "../node_modules/react-router/umd/ReactRouter"
   },
   shim : {
 		JSXTransformer: {
@@ -22,8 +23,8 @@ require.config({
 });
 
 require(['jsx!app'], function(App){
-  var app = new App();
-  app.init();
+  // var app = new App();
+  // app.init();
 });
 
 

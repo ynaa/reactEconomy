@@ -1,28 +1,40 @@
 define(function(require){
 
   var React = require('react');
+	var ExpenseTypeWrapper = require('expenseType');
+	var ExpenseDetailWrapper = require('expenseDetail');
+	var PurchasesWrapper = require('purchases');
   var Menu = require('menu');
-  var Content = require('content');
 
-  function App() {
-    this.AppView = React.createClass({
-      render: function () {
-        return (
-					<div>
-						<Menu/>
-						<div id='content'>
-							<Content/>
-						</div>
+  var Router = require('react-router');
+  var Route = Router.Route;
+	var RouteHandler = Router.RouteHandler;
+
+  var App = React.createClass({
+  render () {
+      return (
+				<div>
+					<Menu/>
+					<div id='content'>
+        		<RouteHandler/>
 					</div>
-        );
-      }
-    });
-  }
+				</div>
+    	)
+  	}
+  });
 
-  App.prototype.init = function () {
-    React.render(<this.AppView />, document.body);
-  };
+  var routes = (
+    <Route handler={App}>
+      <Route path="/" handler={ExpenseTypeWrapper}/>
+      <Route path="/Types" handler={ExpenseTypeWrapper}/>
+      <Route path="/Details" handler={ExpenseDetailWrapper}/>
+      <Route path="/Details/:id" handler={ExpenseDetailWrapper}/>
+      <Route path="/Purchases" handler={PurchasesWrapper}/>
+    </Route>
+  );
 
-  return App;
+	Router.run(routes, Router.HashLocation, (Root) => {
+  	React.render(<Root/>, document.body);
+	});
 
 });
