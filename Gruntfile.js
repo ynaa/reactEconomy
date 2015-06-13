@@ -6,6 +6,15 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    mkdir: {
+      all: {
+        options: {
+          mode: '0700',
+          create: ['dist']
+        }
+      }
+    },
+    clean: ['dist'],
     express: {
       server: {
         options: {
@@ -24,34 +33,39 @@ module.exports = function(grunt) {
       },
       html: {
         files: ['src/*.html'],
-        tasks: ['copy'],
+        tasks: ['copy:html'],
+        options: {
+          spawn: false,
+        }
+      },
+      css: {
+        files: ['src/css/*'],
+        tasks: ['copy:css'],
         options: {
           spawn: false,
         }
       }
     },
     copy: {
-      main: {
+      css: {
         files: [
-          {expand: true, src: ['path/*.html'], dest: 'dist/', filter: 'isFile'}
+          {expand: true, flatten: true, src: ['src/css/*'], dest: 'dist/css', filter: 'isFile'}
+        ]
+      },
+      html: {
+        files: [
+          {expand: true, flatten: true, src: ['src/*'], dest: 'dist', filter: 'isFile'}
         ]
       }
     },
     react: {
-      single_file_output: {
-        files: {
-        }
-      },
-      combined_file_output: {
-        files: {}
-      },
       dynamic_mappings: {
         files: [
           {
             expand: true,
             cwd: 'src/js',
             src: ['**/*.js'],
-            dest: 'dist',
+            dest: 'dist/js',
             ext: '.js'
           }
         ]
@@ -61,6 +75,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('default', ['watch']);
   grunt.registerTask('dev', ['copy', 'express', 'watch']);
+  grunt.registerTask('build', ['mkdir', 'react', 'copy']);
 
 
 
