@@ -1,0 +1,6 @@
+lib/*
+!lib/umd
+node_modules
+npm-debug.log
+website/index.html
+website/tags/*:

@@ -1,0 +1,22 @@
+{
+  "name": "playReact",
+  "version": "0.1.0",
+  "devDependencies": {
+    "babel": "^5.5.7",
+    "grunt": "^0.4.5",
+    "react": "^0.13.3",
+    "react-router": "^0.13.3"
+  },
+  "tags": [
+    "react",
+    "router"
+  ],
+  "keywords": [
+    "react",
+    "react-component",
+    "routing",
+    "route",
+    "routes",
+    "router"
+  ]
+}
