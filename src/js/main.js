@@ -10,7 +10,8 @@ require.config({
 		"moment": "../node_modules/react-datepicker/node_modules/moment/moment",
 		"react-onclickoutside": "../node_modules/react-datepicker/node_modules/react-onclickoutside/index",
 		"reactRouter": "../node_modules/react-router/umd/ReactRouter",
-		"react-router": "../node_modules/react-router/umd/ReactRouter"
+		"react-router": "../node_modules/react-router/umd/ReactRouter",
+		"react-data-components": "../node_modules/react-data-components/lib/index"
   },
   shim : {
 		JSXTransformer: {

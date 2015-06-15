@@ -1,4 +1,4 @@
-define(['react', 'jquery', 'myInput', 'common', 'datepicker', 'moment'], function(React, Router, MyInput, Common, DatePicker, Moment){
+define(['react', 'jquery', 'myInput', 'common', 'datepicker', 'moment', 'pagination'], function(React, Router, MyInput, Common, DatePicker, Moment, Pagination){
 
 	var PurchasesWrapper = React.createClass({
 		loadData: function(params){
@@ -84,7 +84,14 @@ define(['react', 'jquery', 'myInput', 'common', 'datepicker', 'moment'], functio
 	  },
 	  getInitialState: function() {
       return {
-        'purchasesList' : {'items': []},
+        'purchasesList' : {
+					'items': [],
+					'page': 0,
+					'offset': 0,
+					'total' : 0,
+					'totalSum': 0,
+					'pages': []
+				},
         'expDetList' : [],
 				'expTypesList': [],
 				baseUrl: 'http://localhost:9000/'
@@ -103,6 +110,7 @@ define(['react', 'jquery', 'myInput', 'common', 'datepicker', 'moment'], functio
           <PurchasesFilterForm expTypes={this.state.expTypesList} expDetails={this.state.expDetList} filterPurchases={this.filterPurchases}/>
           <PurchaseTotal sum={Common.calculateSum(this.state.purchasesList.items) } />
           <PurchasesList onEdit={this.handlePurchaseEdit} onDelete={this.handlePurchaseDelete} purchases={this.state.purchasesList} expDets={this.state.expDetList}/>
+					<Pagination purchases={this.state.purchasesList}/>
         </div>
       );
 	  }
