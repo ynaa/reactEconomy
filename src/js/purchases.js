@@ -55,8 +55,8 @@ define(['react', 'jquery', 'myInput', 'common', 'datepicker', 'moment', 'paginat
 	        });
 	    });
 	  },
-		filterPurchases: function(expType, expDet, start, end){
-			var params = createParams(expType, expDet, start, end);
+		filterPurchases: function(expType, expDet, start, end, page){
+			var params = createParams(expType, expDet, start, end, page);
 			this.loadPurchasesFromServer(params);
 		},
 	  handlePurchaseDelete: function(purhcase_id){
@@ -110,7 +110,7 @@ define(['react', 'jquery', 'myInput', 'common', 'datepicker', 'moment', 'paginat
           <PurchasesFilterForm expTypes={this.state.expTypesList} expDetails={this.state.expDetList} filterPurchases={this.filterPurchases}/>
           <PurchaseTotal sum={Common.calculateSum(this.state.purchasesList.items) } />
           <PurchasesList onEdit={this.handlePurchaseEdit} onDelete={this.handlePurchaseDelete} purchases={this.state.purchasesList} expDets={this.state.expDetList}/>
-					<Pagination purchases={this.state.purchasesList}/>
+					<Pagination purchases={this.state.purchasesList} filterFunc={this.filterPurchases}/>
         </div>
       );
 	  }
@@ -279,7 +279,7 @@ var PurchasesList = React.createClass({
   }
 });
 
-function createParams(expType, expDet, start, end){
+function createParams(expType, expDet, start, end, page){
 	var params = "";
 	if(expType) {
 		params += "&expType=" + expType;
@@ -292,6 +292,9 @@ function createParams(expType, expDet, start, end){
 	}
 	if(end) {
 		params += "&stop=" + Common.createSearchDate(end.toDate());
+	}
+	if(page) {
+		params += "&page=" + page;
 	}
 	return params;
 }

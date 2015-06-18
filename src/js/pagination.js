@@ -14,10 +14,6 @@ define(function(require){
   });
 
   var myPagination = React.createClass({
-
-    onChangePage() {
-      console.log("Ny side");
-    },
     getInitialState: function(){
       var pagination = {
         page: 0,
@@ -87,43 +83,41 @@ define(function(require){
       }
     },
     onClick: function(pageNumber){
-      console.log("Click: " + pageNumber);
+      this.state.pagination.current = (pageNumber - 1);
+      this.props.filterFunc(null, null, null, null, pageNumber);
     },
     render () {
-
-      var purchases = this.createPagination(this.props.purchases);
-      console.log(purchases);
+      this.state.pagination = this.createPagination(this.props.purchases);
 
       var onClick = this.onClick;
-      var numbers = purchases.pages.map(function(page, index) {
+      var current = this.state.pagination.current;
+      var numbers = this.state.pagination.pages.map(function(page, index) {
+        var pageNumber = (page - 1);
         return (
-          <li key={index}>
-            <MyHref onClick={onClick} page={page} text={page}/>
+          <li key={index} className={ current == pageNumber ? 'disabled' : ''}>
+            <MyHref onClick={onClick} page={pageNumber} text={page}/>
           </li>
         );
       });
 
       return (
-
-
-<div id="content1">
-  <ul className="pagination" >
-    <li>
-        <MyHref onClick={this.onClick} page={0} text={ '&laquo;' }/>
-    </li>
-    <li>
-        <MyHref onClick={this.onClick} page={purchases.current - 1} text={ '‹' }/>
-    </li>
-    {numbers}
-    <li>
-        <MyHref onClick={this.onClick} page={purchases.current + 1} text={ '›' }/>
-    </li>
-    <li>
-        <MyHref onClick={this.onClick} page={purchases.numPages - 1} text={ '&raquo;' }/>
-
-    </li>
-  </ul>
-</div>
+      <div id="content1">
+        <ul className="pagination" >
+          <li className={this.state.pagination.current == 0 ? 'disabled' : ''}>
+            <MyHref onClick={this.onClick} page={0} text={ '&laquo;' }/>
+          </li>
+          <li className={ (this.state.pagination.current - 1) < 0 ? 'disabled' : ''}>
+            <MyHref onClick={this.onClick} page={this.state.pagination.current - 1} text={ '‹' }/>
+          </li>
+          {numbers}
+          <li className={ (this.state.pagination.current + 1) == this.state.pagination.numPages ? 'disabled' : ''}>
+            <MyHref onClick={this.onClick} page={this.state.pagination.current + 1} text={ '›' }/>
+          </li>
+          <li className={ (this.state.pagination.current + 1) == this.state.pagination.numPages ? 'disabled' : ''}>
+            <MyHref onClick={this.onClick} page={this.state.pagination.numPages - 1} text={ '&raquo;' }/>
+          </li>
+        </ul>
+      </div>
       );
     }
   });
