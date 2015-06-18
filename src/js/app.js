@@ -6,6 +6,7 @@ define(function(require){
 	var PurchasesWrapper = require('purchases');
   var Menu = require('menu');
   var OverviewWrapper = require('overview');
+  var UploadWrapper = require('upload');
 
   var Router = require('react-router');
   var Route = Router.Route;
@@ -32,6 +33,7 @@ define(function(require){
       <Route path="/Details/:id" handler={ExpenseDetailWrapper}/>
       <Route path="/Purchases" handler={PurchasesWrapper}/>
       <Route path="/Overview" handler={OverviewWrapper}/>
+      <Route path="/Upload" handler={UploadWrapper}/>
     </Route>
   );
 
