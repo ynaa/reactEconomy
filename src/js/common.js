@@ -117,6 +117,7 @@ define(['react'], function(React){
 		if(!dateAsLong) {
 			return "";
 		}
+		console.log(dateAsLong);
 		var daten = dateAsLong;
     var yyyy = daten.getFullYear().toString();
     var mm = (daten.getMonth()+1).toString(); // getMonth() is zero-based

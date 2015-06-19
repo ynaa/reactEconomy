@@ -46,6 +46,15 @@ define(function(require){
     		}
     	}
     },
+    getInterval: function(name){
+      var intervallene = this.props.intervals['yearIntervals'];
+    	for(var i = 0; i < intervallene.length; i++){
+        var item = intervallene[i];
+    		if(name == item.name){
+    			return item;
+    		}
+    	}
+    },
     render() {
       var sumCells = [];
       var sums = this.props.sums;
@@ -60,7 +69,7 @@ define(function(require){
         if(this.props.collapsable){
           cellen = (
             <div key={i++} className="Cell">
-              <Link to="/Purchases" query={{expType: this.getExpTypeId(key), start: this.props.interval.start, stop: this.props.interval.stop}}>{value}</Link>
+              <Link to="/Purchases" query={{expType: this.getExpTypeId(key), start: this.getInterval(this.props.interval).start, stop: this.getInterval(this.props.interval).end }}>{value}</Link>
             </div>
           );
         }
@@ -93,7 +102,8 @@ define(function(require){
       for(interval in this.props.averageIntervals){
         var rowName = interval;
         var sums = this.props.averageIntervals[interval];
-        averageRows.push(<OverviewTableRow filterYear={this.props.filterYear} key={i++} expenseTypes={this.props.expenseTypes} collapsable={false} sums={sums} rowName={rowName} />)
+        var row = <OverviewTableRow filterYear={this.props.filterYear} key={i++} expenseTypes={this.props.expenseTypes} intervals={this.props.intervals} collapsable={false} sums={sums} rowName={rowName} />;
+        averageRows.push(row);
       }
 
       var yearAverages = [];
@@ -103,18 +113,17 @@ define(function(require){
         var rowName = interval;
         var sums = this.props.sumByIntervals[interval];
 
+        var row = <OverviewTableRow filterYear={this.props.filterYear} key={rowName} interval={interval} expenseTypes={this.props.expenseTypes} intervals={this.props.intervals} collapsable={true} sums={sums} rowName={rowName} />
+
         if(rowName.contains("-")){
-          monthsAverages.push(<OverviewTableRow filterYear={this.props.filterYear} key={rowName} interval={interval} expenseTypes={this.props.expenseTypes} collapsable={true} sums={sums} rowName={rowName} />)
+          monthsAverages.push(row);
         }
         else {
-          yearAverages.push(<OverviewTableRow filterYear={this.props.filterYear} key={rowName} interval={interval} expenseTypes={this.props.expenseTypes} collapsable={true} sums={sums} rowName={rowName} />)
+          yearAverages.push(row);
         }
       }
 
-      var year = this.props.filteredYear;
-      
-
-      var elementPos = yearAverages.map(function(x) {return x.key; }).indexOf(year);
+      var elementPos = yearAverages.map(function(x) {return x.key; }).indexOf(this.props.filteredYear);
 
       if(elementPos >= 0){
         yearAverages.splice(elementPos + 1, 0, monthsAverages);

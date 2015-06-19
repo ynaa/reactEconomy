@@ -293,10 +293,20 @@ function createParams(expType, expDet, start, end, page){
 		params += "&expDet=" + expDet;
 	}
 	if(start) {
-		params += "&start=" + Common.createSearchDate(start.toDate());
+		if(start.toDate){
+			params += "&start=" + Common.createSearchDate(start.toDate());
+		}
+		else{
+			params += "&start=" + Common.createDate(start);
+		}
 	}
 	if(end) {
-		params += "&stop=" + Common.createSearchDate(end.toDate());
+		if(end.toDate){
+			params += "&stop=" + Common.createSearchDate(end.toDate());
+		}
+		else{
+			params += "&start=" + Common.createDate(end);
+		}
 	}
 	if(page) {
 		params += "&page=" + page;
