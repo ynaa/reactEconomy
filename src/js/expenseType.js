@@ -9,7 +9,6 @@ define(['react', 'jquery', 'myInput', 'common'], function(React, Router, MyInput
   var ExpenseType = React.createClass({
     onChange: function(cid){
       var value = cid.target.value;
-
     	var expType = this.props.expType;
       expType[cid.target.name] = value;
       this.props.onTypeEdit(expType);

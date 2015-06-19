@@ -92,7 +92,7 @@ define(['react'], function(React){
 		console.log(output);
 	};
 
-	findById = function(id, list){
+	Common.findById = function(id, list){
 		for (i = 0; i < list.length; i++) {
 		    if(list[i]._id == id){
 		    	return list[i];
