@@ -42,17 +42,17 @@ define(['react', 'jquery', 'myInput', 'common', 'datepicker', 'moment', 'paginat
 	    }
 	    var json = JSON.stringify(purchase);
 	    this.setState({data: this.state.data}, function() {
-	        $.ajax({
-	            url: this.state.baseUrl + "/purchases/edit/" + purchase._id,
-	            contentType: "application/json; charset=utf-8",
-	            type: 'POST',
-	            data: json,
-	            success: function(data) {
-	            }.bind(this),
-	            error: function(xhr, status, err) {
-	                console.error(this.props.url, status, err.toString());
-	            }.bind(this)
-	        });
+        $.ajax({
+          url: this.state.baseUrl + "/purchases/edit/" + purchase._id,
+          contentType: "application/json; charset=utf-8",
+          type: 'POST',
+          data: json,
+          success: function(data) {
+          }.bind(this),
+          error: function(xhr, status, err) {
+            console.error(this.props.url, status, err.toString());
+          }.bind(this)
+        });
 	    });
 	  },
 		filterPurchases: function(expType, expDet, start, end, page){
@@ -66,50 +66,54 @@ define(['react', 'jquery', 'myInput', 'common', 'datepicker', 'moment', 'paginat
 	    var allData = purchasesList.items;
 	    var purhcase = allData.find(function(id, value){return id=purhcase_id});
 	    if(confirm("Er du sikker på du vil slette  " + purhcase.description + "?")){
-	        $.ajax({
-	            url: this.state.baseUrl + "/purchases/delete/" + purhcase_id,
-	            type: 'DELETE',
-	            data: {},
-	            success: function(data) {
-	                allData.splice(purhcase, 1);
-	                purchasesList.items = allData;
-	                var newData = {expDetList : expDetList, purchasesList : purchasesList, expTypesList: expTypesList}
-	                this.setState({data: newData});
-	            }.bind(this),
-	            error: function(xhr, status, err) {
-	                console.error(this.props.url, status, err.toString());
-	            }.bind(this)
-	        });
+        $.ajax({
+          url: this.state.baseUrl + "/purchases/delete/" + purhcase_id,
+          type: 'DELETE',
+          data: {},
+          success: function(data) {
+            allData.splice(purhcase, 1);
+            purchasesList.items = allData;
+            var newData = {expDetList : expDetList, purchasesList : purchasesList, expTypesList: expTypesList}
+            this.setState({data: newData});
+          }.bind(this),
+          error: function(xhr, status, err) {
+              console.error(this.props.url, status, err.toString());
+          }.bind(this)
+        });
 	    }
 	  },
 	  getInitialState: function() {
       return {
-        'purchasesList' : {
-					'items': [],
-					'page': 0,
-					'offset': 0,
-					'total' : 0,
-					'totalSum': 0,
-					'pages': []
+        purchasesList : {
+					items: [],
+					page: 0,
+					offset: 0,
+					total: 0,
+					totalSum: 0,
+					pages: []
 				},
-        'expDetList' : [],
-				'expTypesList': [],
+        expDetList: [],
+				expTypesList: [],
+				params: {},
 				baseUrl: 'http://localhost:9000/'
       };
 	  },
 	  componentDidMount: function() {
-			var expDet = this.props.query.expDet;
-			var expType = this.props.query.expType;
-			var start = this.props.query.start;
-			var end = this.props.query.end;
-      this.loadData(createParams(expType, expDet, start, end));
+      this.loadData(createParams(this.props.query.expType, this.props.query.expDet, this.props.query.start, this.props.query.end));
+			var params = {
+				startdate: this.props.query.start,
+	      enddate: this.props.query.end,
+	      expType: this.props.query.expType,
+	      expDet: this.props.query.expDet
+			};
+			this.setState({params: params });
 	  },
 	  render: function() {
       return (
         <div>
-          <PurchasesFilterForm expTypes={this.state.expTypesList} expDetails={this.state.expDetList} filterPurchases={this.filterPurchases}/>
-          <PurchaseTotal sum={Common.calculateSum(this.state.purchasesList.items) } />
-          <PurchasesList onEdit={this.handlePurchaseEdit} onDelete={this.handlePurchaseDelete} purchases={this.state.purchasesList} expDets={this.state.expDetList}/>
+          <PurchasesFilterForm parameters={this.state.params} expTypes={this.state.expTypesList} expDetails={this.state.expDetList} filterPurchases={this.filterPurchases} />
+          <PurchaseTotal sum={this.state.purchasesList.totalSum } />
+          <PurchasesList onEdit={this.handlePurchaseEdit} numPurchases={this.state.purchasesList.total} onDelete={this.handlePurchaseDelete} purchases={this.state.purchasesList} expDets={this.state.expDetList}/>
 					<Pagination purchases={this.state.purchasesList} filterFunc={this.filterPurchases}/>
         </div>
       );
@@ -142,26 +146,26 @@ var Purchase = React.createClass({
     },
     render: function() {
       return (
-        		<div className="Row">
-                <div className="Cell">
-                    <input readOnly key={this.props.purchase._id} name="description" value={this.props.purchase.description} />
-                </div>
-                <div className="Cell">
-                	<input readOnly key={this.props.purchase._id} name="Date" value={Common.createDate(this.props.purchase.bookedDate)} />
-                </div>
-                <div className="Cell">
-                	<input readOnly key={this.props.purchase._id} name="amount" value={this.props.purchase.amount}/>
-                </div>
-                <div className="Cell">
-                	{Common.createDetailSelect("expenseDetail", this.props.expenseDetails,
-                			this.props.purchase.expenseDetail._id,
-                			this.onBlur, false)}
-                </div>
-                <div className="Cell">
-                    <button onClick={this.onDelete} >Slett</button>
-                </div>
-            </div>
-        );
+    		<div className="Row">
+          <div className="Cell">
+            <input readOnly key={this.props.purchase._id} name="description" value={this.props.purchase.description} />
+          </div>
+          <div className="Cell">
+          	<input readOnly key={this.props.purchase._id} name="Date" value={Common.createDate(this.props.purchase.bookedDate)} />
+          </div>
+          <div className="Cell">
+          	<input readOnly key={this.props.purchase._id} name="amount" value={this.props.purchase.amount}/>
+          </div>
+          <div className="Cell">
+          	{Common.createDetailSelect("expenseDetail", this.props.expenseDetails,
+          			this.props.purchase.expenseDetail._id,
+          			this.onBlur, false)}
+          </div>
+          <div className="Cell">
+            <button onClick={this.onDelete} >Slett</button>
+          </div>
+        </div>
+      );
     }
 });
 
@@ -171,10 +175,10 @@ var PurchasesFilterForm = React.createClass({
 	},
 	getInitialState: function() {
     return {
-      startdate: null,
-      enddate: null,
-      expType: null,
-      expDet: null
+      startdate: '',
+      enddate: '',
+      expType: '',
+      expDet: ''
     };
   },
   handleExpTypeChange: function(expType) {
@@ -186,6 +190,7 @@ var PurchasesFilterForm = React.createClass({
 		this.onBlur(this.state.expType, expDet.target.value, this.state.startdate, this.state.enddate);
   },
   handleStartDateChange: function(date) {
+		console.log("Hei");
     this.setState({ startdate: date });
 		this.onBlur(this.state.expType, this.state.expDet, date, this.state.enddate);
   },
@@ -194,54 +199,54 @@ var PurchasesFilterForm = React.createClass({
 		this.onBlur(this.state.expType, this.state.expDet, this.state.startdate, date);
   },
   render: function() {
-        return (
-          <div>
-            <h2>Filter</h2>
-            <form name="regform">
-              <div className="Table">
-                <div className="Row">
-                  <div className="FilterCell">
-				              <dl>
-                        <dd>Utgiftsttype</dd>
-                        <dt>
-													{Common.createSelect("expType", this.props.expTypes,
-				                			this.state.expType,
-				                			this.handleExpTypeChange, false, [{ id: '', name: 'Velg utgiftsttype' }])}
-                        </dt>
-                      </dl>
-                    </div>
-                    <div className="FilterCell">
-                    <dl>
-                      <dd>Utgiftsdetalj</dd>
-                      <dt>
-			                	{Common.createDetailSelect("expenseDetail", this.props.expDetails,
-														this.state.expDet,
-			                			this.handleExpDetChange, false, [{ id: '-2', name: 'Ingen' }, { id: '', name: 'Velg utgiftstdetalj' }])}
-                    </dt>
-                  </dl>
-                </div>
-                <div className="FilterCell">
-                  <dl>
-                    <dd>Startdato</dd>
-                    <dt>
-										<DatePicker id="startdate" name="start" key="startdate" selected={this.state.startdate} onChange={this.handleStartDateChange} dateFormat="DD.MM.YYYY"/>
-                    </dt>
-                  </dl>
-                </div>
-                <div className="FilterCell">
-                  <dl>
-                    <dd>Sluttdato</dd>
-                    <dt>
-											<DatePicker id="enddate" name="end" key="enddate" selected={this.state.enddate} onChange={this.handleEndDateChange} dateFormat="DD.MM.YYYY"/>
-                    </dt>
-                  </dl>
-                </div>
+    return (
+      <div>
+        <h2>Filter</h2>
+        <form name="regform">
+          <div className="Table">
+            <div className="Row">
+              <div className="FilterCell">
+	              <dl>
+                  <dd>Utgiftsttype</dd>
+                  <dt>
+										{Common.createSelect("expType", this.props.expTypes,
+												this.props.parameters.expType,
+	                			this.handleExpTypeChange, false, [{ id: '', name: 'Velg utgiftsttype' }])}
+                  </dt>
+                </dl>
               </div>
-            </div>
-          </form>
-        </div>
-        );
-    }
+              <div className="FilterCell">
+	              <dl>
+	                <dd>Utgiftsdetalj</dd>
+	                <dt>
+	                	{Common.createDetailSelect("expenseDetail", this.props.expDetails,
+												this.props.parameters.expDet,
+	                			this.handleExpDetChange, false, [{ id: '-2', name: 'Ingen' }, { id: '', name: 'Velg utgiftstdetalj' }])}
+	              	</dt>
+	            	</dl>
+	          	</div>
+	            <div className="FilterCell">
+	              <dl>
+	                <dd>Startdato</dd>
+	                <dt>
+									<DatePicker id="startdate" name="startdate" key="startdate" selected={this.state.startdate} onChange={this.handleStartDateChange} dateFormat="DD.MM.YYYY"/>
+	                </dt>
+	              </dl>
+	            </div>
+	            <div className="FilterCell">
+	              <dl>
+	                <dd>Sluttdato</dd>
+	                <dt>
+										<DatePicker id="enddate" name="end" key="enddate" selected={this.state.enddate} onChange={this.handleEndDateChange} dateFormat="DD.MM.YYYY"/>
+	                </dt>
+	              </dl>
+	            </div>
+	          </div>
+	        </div>
+	      </form>
+	    </div>
+    );
+  }
 });
 
 
@@ -263,7 +268,7 @@ var PurchasesList = React.createClass({
     }
     return (
       <div>
-        <h2>Liste med utgiftstyper, {size} type(r)</h2>
+        <h2>Liste med utgiftstyper, {this.props.numPurchases} type(r)</h2>
         <div className="Table">
           <div className="Heading">
             <div className="Cell"><p>Beskrivelse</p></div>
