@@ -28,6 +28,7 @@ define(['react', 'jquery', 'myInput', 'common', 'datepicker', 'moment', 'paginat
 				dataType: 'json',
 				success: function(data) {
 					this.setState({purchasesList: data.purchasesList, expDetList: data.expDetList});
+
 				}.bind(this),
 				error: function(xhr, status, err) {
 					console.error(this.props.url, status, err.toString());
@@ -57,6 +58,8 @@ define(['react', 'jquery', 'myInput', 'common', 'datepicker', 'moment', 'paginat
 	  },
 		filterPurchases: function(expType, expDet, start, end, page){
 			var params = createParams(expType, expDet, start, end, page);
+			var stateParams = createStateParams(expType, expDet, start, end);
+			this.setState({params: stateParams });
 			this.loadPurchasesFromServer(params);
 		},
 	  handlePurchaseDelete: function(purhcase_id){
@@ -100,12 +103,12 @@ define(['react', 'jquery', 'myInput', 'common', 'datepicker', 'moment', 'paginat
 	  },
 	  componentDidMount: function() {
       this.loadData(createParams(this.props.query.expType, this.props.query.expDet, this.props.query.start, this.props.query.end));
-			var params = {
-				startdate: this.props.query.start,
-	      enddate: this.props.query.end,
-	      expType: this.props.query.expType,
-	      expDet: this.props.query.expDet
-			};
+			var params = createStateParams(
+					this.props.query.expType,
+					this.props.query.expDet,
+					this.props.query.start,
+		      this.props.query.end
+			);
 			this.setState({params: params });
 	  },
 	  render: function() {
@@ -114,7 +117,7 @@ define(['react', 'jquery', 'myInput', 'common', 'datepicker', 'moment', 'paginat
           <PurchasesFilterForm parameters={this.state.params} expTypes={this.state.expTypesList} expDetails={this.state.expDetList} filterPurchases={this.filterPurchases} />
           <PurchaseTotal sum={this.state.purchasesList.totalSum } />
           <PurchasesList onEdit={this.handlePurchaseEdit} numPurchases={this.state.purchasesList.total} onDelete={this.handlePurchaseDelete} purchases={this.state.purchasesList} expDets={this.state.expDetList}/>
-					<Pagination purchases={this.state.purchasesList} filterFunc={this.filterPurchases}/>
+					<Pagination purchases={this.state.purchasesList} filterFunc={this.filterPurchases} parameters={this.state.params}/>
         </div>
       );
 	  }
@@ -187,10 +190,17 @@ var PurchasesFilterForm = React.createClass({
   },
   handleExpDetChange: function(expDet) {
     this.setState({ expDet: expDet.target.value });
-		this.onBlur(this.state.expType, expDet.target.value, this.state.startdate, this.state.enddate);
+		var et = this.state.expType;
+		if(!this.state.expType){
+			var expDetAsJson = Common.findById(expDet.target.value, this.props.expDetails);
+			if(expDetAsJson){
+		    et = expDetAsJson.expenseType._id;
+		    this.setState({ expType: et });
+			}
+		}
+		this.onBlur(et, expDet.target.value, this.state.startdate, this.state.enddate);
   },
   handleStartDateChange: function(date) {
-		console.log("Hei");
     this.setState({ startdate: date });
 		this.onBlur(this.state.expType, this.state.expDet, date, this.state.enddate);
   },
@@ -199,6 +209,14 @@ var PurchasesFilterForm = React.createClass({
 		this.onBlur(this.state.expType, this.state.expDet, this.state.startdate, date);
   },
   render: function() {
+
+		var expType = this.props.parameters.expType;
+		if(!this.props.parameters.expType && this.props.parameters.expDet){
+			var expDetAsJson = Common.findById(this.props.parameters.expDet, this.props.expDetails);
+			if(expDetAsJson){
+				expType = expDetAsJson.expenseType._id;
+			}
+		}
     return (
       <div>
         <h2>Filter</h2>
@@ -210,7 +228,7 @@ var PurchasesFilterForm = React.createClass({
                   <dd>Utgiftsttype</dd>
                   <dt>
 										{Common.createSelect("expType", this.props.expTypes,
-												this.props.parameters.expType,
+												expType,
 	                			this.handleExpTypeChange, false, [{ id: '', name: 'Velg utgiftsttype' }])}
                   </dt>
                 </dl>
@@ -283,6 +301,16 @@ var PurchasesList = React.createClass({
     );
   }
 });
+
+function createStateParams(expType, expDet, start, end){
+	var params = {
+		startdate: start,
+		enddate: end,
+		expType: expType,
+		expDet: expDet
+	};
+	return params;
+}
 
 function createParams(expType, expDet, start, end, page){
 	var params = "";

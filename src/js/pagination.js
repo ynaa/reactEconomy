@@ -1,6 +1,7 @@
 define(function(require){
 
   var React = require('react');
+
   var MyHref = React.createClass({
     htmlDecode: function(value){
       return $('<div/>').html(value).text();
@@ -32,8 +33,8 @@ define(function(require){
         offset: purchasesList.offset,
         totalSize: purchasesList.total,
         current: purchasesList.page,
-        numPages: Math.ceil(purchasesList.total / 10),
-        pages: this.generatePagesArray(purchasesList.page, purchasesList.total, 10, 9)
+        numPages: Math.ceil(purchasesList.total / purchasesList.numPerPages),
+        pages: this.generatePagesArray(purchasesList.page, purchasesList.total, purchasesList.numPerPages, 9)
       };
       return pagination;
     },
@@ -84,10 +85,18 @@ define(function(require){
     },
     onClick: function(pageNumber){
       this.state.pagination.current = (pageNumber - 1);
-      this.props.filterFunc(null, null, null, null, pageNumber);
+      //this.props.filterFunc(null, null, null, null, pageNumber);
+
+      this.props.filterFunc(
+        this.state.parameters.expType,
+        this.state.parameters.expDet,
+        this.state.parameters.startdate,
+        this.state.parameters.enddate, pageNumber
+      );
     },
     render () {
       this.state.pagination = this.createPagination(this.props.purchases);
+      this.state.parameters = this.props.parameters;
 
       var onClick = this.onClick;
       var current = this.state.pagination.current;

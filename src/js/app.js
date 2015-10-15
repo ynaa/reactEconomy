@@ -1,6 +1,7 @@
 define(function(require){
 
   var React = require('react');
+  
 	var ExpenseTypeWrapper = require('expenseType');
 	var ExpenseDetailWrapper = require('expenseDetail');
 	var PurchasesWrapper = require('purchases');
