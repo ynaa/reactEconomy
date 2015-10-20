@@ -44,7 +44,7 @@ define(['react', 'jquery', 'myInput', 'common', 'datepicker', 'moment', 'paginat
 	    var json = JSON.stringify(purchase);
 	    this.setState({data: this.state.data}, function() {
         $.ajax({
-          url: this.state.baseUrl + "/purchases/edit/" + purchase._id,
+          url: this.state.baseUrl + "purchases/edit/" + purchase._id,
           contentType: "application/json; charset=utf-8",
           type: 'POST',
           data: json,
@@ -63,14 +63,14 @@ define(['react', 'jquery', 'myInput', 'common', 'datepicker', 'moment', 'paginat
 			this.loadPurchasesFromServer(params);
 		},
 	  handlePurchaseDelete: function(purhcase_id){
-	    var purchasesList = this.state.data.purchasesList;
-	    var expDetList = this.state.data.expDetList;
-	    var expTypesList = this.state.data.expTypesList;
+	    var purchasesList = this.state.purchasesList;
+	    var expDetList = this.state.expDetList;
+	    var expTypesList = this.state.expTypesList;
 	    var allData = purchasesList.items;
 	    var purhcase = allData.find(function(id, value){return id=purhcase_id});
 	    if(confirm("Er du sikker på du vil slette  " + purhcase.description + "?")){
         $.ajax({
-          url: this.state.baseUrl + "/purchases/delete/" + purhcase_id,
+          url: this.state.baseUrl + "purchases/delete/" + purhcase_id,
           type: 'DELETE',
           data: {},
           success: function(data) {
@@ -135,7 +135,7 @@ var Purchase = React.createClass({
       var purchase = this.props.purchase;
       var value = cid.target.value;
       if(cid.target.name == "expenseDetail"){
-    		value = findById(value, this.props.expenseDetails);
+    		value = Common.findById(value, this.props.expenseDetails);
       }
 
       if(cid.target.name == "amount"){
