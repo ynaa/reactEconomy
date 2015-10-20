@@ -1,7 +1,7 @@
 define(function(require){
 
   var React = require('react');
-  
+
 	var ExpenseTypeWrapper = require('expenseType');
 	var ExpenseDetailWrapper = require('expenseDetail');
 	var PurchasesWrapper = require('purchases');
@@ -16,8 +16,10 @@ define(function(require){
   var App = React.createClass({
   render () {
       return (
-				<div>
-					<Menu/>
+				<div id='page'>
+          <nav id='web-nav'>
+            <Menu/>
+          </nav>
 					<div id='content'>
         		<RouteHandler/>
 					</div>
